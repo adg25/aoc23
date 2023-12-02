@@ -8,6 +8,7 @@
 
 namespace aoc
 {
+// day 1
 class trebuchet{
 public:
     static constexpr auto* digits = "0123456789";
