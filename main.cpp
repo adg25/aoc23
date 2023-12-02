@@ -7,8 +7,12 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <string>
+
+#include "include/trebuchet.hpp"
 
 int main()
 {
-    std::cout << "Hello world" << std::endl;
+    auto const count = aoc::trebuchet::GetCount("input/trebuchet.txt");
+    std::cout << "Count: " << std::to_string(count) << std::endl;
 }
