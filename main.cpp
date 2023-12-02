@@ -13,6 +13,6 @@
 
 int main()
 {
-    auto const count = aoc::trebuchet::GetCount("input/trebuchet.txt");
+    auto const count = aoc::trebuchet::GetCountWords("input/trebuchet.txt");
     std::cout << "Count: " << std::to_string(count) << std::endl;
 }
