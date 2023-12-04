@@ -83,7 +83,7 @@ struct Line
     }
 };
 
-// advent of code day 3
+// advent of code day 3 (DNF)
 class gear_ratios
 {
   public:
