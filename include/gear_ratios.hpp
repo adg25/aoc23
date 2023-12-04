@@ -15,7 +15,7 @@ struct GearPart
 {
     std::stack<int> nums{};
     std::pair<int, int> range{};
-
+    bool used{false};
     int result() const
     {
         auto cpy = nums;
@@ -33,7 +33,7 @@ struct GearPart
 
     bool IsWithinRange(int val) const
     {
-        return val >= range.first && val <= range.second;
+        return val >= range.first && val <= range.second && !used;
     }
 };
 
@@ -45,26 +45,26 @@ struct Line
     int GetPartIfMatchesSymbol(int symbolIdx)
     {
         auto first = 0; auto second = 0;
-        auto const& it = std::find_if(gearParts.cbegin(), gearParts.cend(), [symbolIdx](auto const& g){
+        auto it = std::find_if(gearParts.begin(), gearParts.end(), [symbolIdx](auto const& g){
             return g.IsWithinRange(symbolIdx);
         });
-        if(it != gearParts.cend())
+        if(it != gearParts.end())
         {
-            std::cout << "Found number to erase: " << it->result() << std::endl;
+            // std::cout << "Found number to erase: " << it->result() << std::endl;
             first = it->result();
-            gearParts.erase(it);
+            it->used = true;
 
         }
-        auto const& it2 = std::find_if(gearParts.cbegin(), gearParts.cend(), [symbolIdx](auto const& g){
+        auto const& it2 = std::find_if(gearParts.begin(), gearParts.end(), [symbolIdx](auto const& g){
             return g.IsWithinRange(symbolIdx);
         });
         if(it2 != gearParts.cend())
         {
-            std::cout << "Found second number to erase: " << it->result() << std::endl;
+            // std::cout << "Found second number to erase: " << it->result() << std::endl;
             second = it2->result();
-            gearParts.erase(it2);
+            it->used = true;
         }
-        std::cout << "returning " << first << " + " << second << std::endl;
+       // std::cout << "returning " << first << " + " << second << std::endl;
         return first + second;
     }
 
@@ -95,11 +95,16 @@ class gear_ratios
         // there are no symbols in the top or bottom line
         for(auto i = 1; i < lines.size() - 1; i++)
         {
-            std::cout << "sum before: " << sum << std::endl;
+           // std::cout << "sum before: " << sum << std::endl;
             auto& prev = lines.at(i - 1);
             auto& curr = lines.at(i);
             auto& next = lines.at(i + 1);
-            
+            if(i == lines.size() - 2)
+            {
+                prev.print();
+                curr.print();
+                next.print();
+            }
             auto const& symbols = curr.symbolIndices;
             for(auto symbolIdx : symbols)
             {
@@ -149,6 +154,14 @@ class gear_ratios
                 }
                 else
                 {
+                    if(!parsingPart.nums.empty())
+                    {
+                        // end of the range of numbers
+                        parsingPart.range.second = i;
+                        lineData.gearParts.push_back(parsingPart);
+                        // reset the current parsing data
+                        parsingPart = GearPart{};
+                    }
                     // bingo we've got a symbol
                     lineData.symbolIndices.push_back(i);
                 }
