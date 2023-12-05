@@ -7,7 +7,7 @@
 #include <string>
 #include "absl/strings/str_split.h"
 #include <set>
-
+#include <cmath>
 
 namespace aoc
 {
@@ -25,17 +25,16 @@ namespace aoc
             {
                 // split on "|", left set is winners, right set is our num
                 std::vector<std::string> split = absl::StrSplit(line, "|");
-                std::set<std::string> winning = absl::StrSplit(split.at(0), " ");
-                std::set<std::string> myNums = absl::StrSplit(split.at(1), " ");
+                std::set<std::string> winning = absl::StrSplit(split.at(0), " ", absl::SkipEmpty());
+                std::set<std::string> myNums = absl::StrSplit(split.at(1), " ", absl::SkipEmpty());
                 std::vector<std::string> intersect{};
                 std::set_intersection(winning.begin(), winning.end(), myNums.begin(), myNums.end(), std::back_inserter(intersect));
-                std::cout << "intersect: " << intersect.size() << std::endl;
-                if(intersect.size() == 0)
+                auto const numOverlapping = intersect.size();;
+                if(numOverlapping == 0)
                 {
                     continue;
                 }
-                auto const pow = 1 << (intersect.size() - 1);
-                count += pow;
+                count +=  (1 << (numOverlapping - 1));
             }
             return count;
         }
